@@ -1,8 +1,7 @@
-import uiautomation as auto
+from uiautomation import WindowControl
 
 from ...base.window import TopLevelWindow
-
-MAIN_WINDOW = auto.WindowControl(RegexName="ACONSYS")
+from .controls import MAIN_WINDOW
 
 
 class MainWindow(TopLevelWindow):
@@ -21,81 +20,81 @@ class MainWindow(TopLevelWindow):
         menu_item = menu_bar.MenuItemControl(searchDepth=1, Name=menu_name)
         assert menu_item.GetInvokePattern().Invoke()
 
-        tablas_menu = self._window.MenuControl(searchDepth=1, Name=menu_name)
+        menu_tables = self._window.MenuControl(searchDepth=1, Name=menu_name)
 
-        option_item = tablas_menu.MenuItemControl(searchDepth=1, Name=option_name)
+        option_item = menu_tables.MenuItemControl(searchDepth=1, Name=option_name)
         assert option_item.GetInvokePattern().Invoke()
 
     def download_centro_costos_file(self, file_name: str) -> None:
-        ventana = self._window.WindowControl(Name="Mantenimiento de Centro de Costos")
+        window = self._window.WindowControl(
+            Name="Mantenimiento de Centro de Costos", searchDepth=1
+        )
 
-        panel = ventana.PaneControl(searchDepth=1, ClassName="ImFrame3DWndClass")
+        panel = window.PaneControl(searchDepth=1, ClassName="ImFrame3DWndClass")
 
-        imprimir = panel.ButtonControl(searchDepth=1, Name="Imprimir")
-        assert imprimir.GetInvokePattern().Invoke()
+        print_button = panel.ButtonControl(searchDepth=1, Name="Imprimir")
+        assert print_button.GetInvokePattern().Invoke()
 
-        ventana_imprimir = auto.WindowControl(searchDepth=1, Name="Imprimir")
+        print_window = WindowControl(searchDepth=1, Name="Imprimir")
 
-        panel_imprimir = ventana_imprimir.PaneControl(ClassName="SHELLDLL_DefView")
+        print_panel = print_window.PaneControl(
+            ClassName="SHELLDLL_DefView", searchDepth=1
+        )
 
-        pdf_seleccionar = panel_imprimir.ListControl(Name="Vista de carpetas")
+        select_box_pdf = print_panel.ListControl(
+            Name="Vista de carpetas", searchDepth=1
+        )
 
-        clic_pdf = pdf_seleccionar.ListItemControl(
+        item_pdf_click = select_box_pdf.ListItemControl(
             searchDepth=1, Name="Microsoft Print to PDF"
         )
-        assert clic_pdf.GetSelectionItemPattern()
+        assert item_pdf_click.GetSelectionItemPattern()
 
-        clic_pdf_imprimir = ventana_imprimir.ButtonControl(
-            searchDepth=1, Name="Imprimir"
-        )
-        assert clic_pdf_imprimir.GetInvokePattern().Invoke()
+        inner_print_button = print_window.ButtonControl(searchDepth=1, Name="Imprimir")
+        assert inner_print_button.GetInvokePattern().Invoke()
 
-        ventana_principal = self._window.PaneControl(
-            searchDepth=1, Name="Área de trabajo"
-        )
+        main_window = self._window.PaneControl(searchDepth=1, Name="Área de trabajo")
 
-        ventana = ventana_principal.WindowControl(
-            searchDepth=1, ClassName="ThunderRT6FormDC"
-        )
+        window = main_window.WindowControl(searchDepth=1, ClassName="ThunderRT6FormDC")
 
-        ventana_panel = ventana.PaneControl(searchDepth=1, Name="")
+        panel_window = window.PaneControl(searchDepth=1, Name="")
 
-        barra_principal = ventana_panel.TextControl(searchDepth=1, Name="")
+        main_bar = panel_window.TextControl(searchDepth=1, Name="")
 
-        barra_oficial = barra_principal.PaneControl(searchDepth=1, Name="")
-        # TIENE VARIOS00000 HERMANOS
-        barra_herramientas = barra_oficial.ToolBarControl(
+        oficial_bar = main_bar.PaneControl(searchDepth=1, Name="")
+        # Has many siblings
+        toolbar = oficial_bar.ToolBarControl(
             searchDepth=1, AutomationId="203"
-        )  # ID PODRIA CAMBIAR
+        )  # ID could change
 
-        icono_exportar = barra_herramientas.ButtonControl(
-            searchDepth=1, Name="Exportar informe"
+        export_icon = toolbar.ButtonControl(searchDepth=1, Name="Exportar informe")
+        assert export_icon.GetInvokePattern().Invoke()
+
+        export_window = self._window.WindowControl(searchDepth=1, Name="Export")
+
+        ok_export_button = export_window.ButtonControl(searchDepth=1, Name="OK")
+        assert ok_export_button.GetInvokePattern().Invoke()
+
+        export_options = self._window.WindowControl(
+            searchDepth=1, Name="Export Options"
         )
-        assert icono_exportar.GetInvokePattern().Invoke()
 
-        ventana_export = self._window.WindowControl(searchDepth=1, Name="Export")
+        second_ok_export_button = export_options.ButtonControl(searchDepth=1, Name="OK")
+        assert second_ok_export_button.GetInvokePattern().Invoke()
 
-        ok_export = ventana_export.ButtonControl(searchDepth=1, Name="OK")
-        assert ok_export.GetInvokePattern().Invoke()
-
-        ok_export2 = self._window.WindowControl(searchDepth=1, Name="Export Options")
-
-        clic_export2 = ok_export2.ButtonControl(searchDepth=1, Name="OK")
-        assert clic_export2.GetInvokePattern().Invoke()
-
-        ventana_guardar = self._window.WindowControl(
+        save_window = self._window.WindowControl(
             searchDepth=1, Name="Choose export file"
         )
 
-        cuadro_nombre_pdf = ventana_guardar.PaneControl(
+        pdf_name_chart = save_window.PaneControl(
             searchDepth=1, Name="RptTablasComunConta"
         )
 
-        nombre_pdf = cuadro_nombre_pdf.ComboBoxControl(searchDepth=1, Name="Nombre:")
+        select_pdf_name = pdf_name_chart.ComboBoxControl(searchDepth=1, Name="Nombre:")
 
-        rellenar_nombre = nombre_pdf.EditControl(searchDepth=1, Name="Nombre:")
+        input_pdf_name = select_pdf_name.EditControl(searchDepth=1, Name="Nombre:")
 
-        rellenar_nombre.GetValuePattern().SetValue(file_name)
+        input_pdf_name.GetValuePattern().SetValue(file_name)
 
-        guardar = ventana_guardar.ButtonControl(searchDepth=1, Name="Guardar")
-        assert guardar.GetInvokePattern().Invoke()
+        save_button = save_window.ButtonControl(searchDepth=1, Name="Guardar")
+        assert save_button.GetInvokePattern().Invoke()
