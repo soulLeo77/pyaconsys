@@ -2,7 +2,7 @@ from uiautomation import WindowControl
 
 
 class BaseWindow:
-    """Clase base para manejar ventana de ACONSYS."""
+    """Base class to manage ACONSYS window."""
 
     _window: WindowControl
 
@@ -35,7 +35,7 @@ class BaseWindow:
 
 
 class TopLevelWindow(BaseWindow):
-    """Ventana principal"""
+    """Main window"""
 
     @classmethod
     def set_topmost(cls) -> None:

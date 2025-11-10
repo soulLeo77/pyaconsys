@@ -1,15 +1,13 @@
 from pathlib import Path
 from subprocess import Popen
 
-from loguru import logger
-
 from ...base.window import TopLevelWindow
 from ..main.window import MainWindow
 from .controls import CONNECT_BUTTON, LOGIN_WINDOW, PASSWORD_EDIT, USERNAME_EDIT
 
 
 class LoginWindow(TopLevelWindow):
-    """Maneja el inicio de sesión en la aplicación ACONSYS."""
+    """Manage the ACONSYS login window."""
 
     _window = LOGIN_WINDOW
     _executable_file: Path
@@ -18,20 +16,18 @@ class LoginWindow(TopLevelWindow):
     def __init__(self, executable_file_path: Path | str) -> None:
         self._executable_file: Path = Path(executable_file_path)
         if not self._executable_file.is_file():
-            raise ValueError("Ruta al ejecutable inválida.")
+            raise ValueError("INVALID EXECUTABLE FILE PATH.")
         return super().__init__()
 
     def login(self, usename: str, password: str) -> MainWindow:
-        """Inicia sesión en ACONSYS."""
+        """Login to ACONSYS."""
         if MainWindow.exists():
             return MainWindow()
 
         if not self.exists():
-            logger.info(f"Ejecutando ACONSYS: {self._executable_file}")
             self._popen = Popen(self._executable_file)
 
         self.wait_for()
-        logger.info("Ventana de acceso detectada. Ingresando contraseña...")
 
         username_edit = USERNAME_EDIT.GetValuePattern()
         username_edit.SetValue(usename)
@@ -44,8 +40,7 @@ class LoginWindow(TopLevelWindow):
 
         if self.exists():
             raise RuntimeError(
-                "Error en el inicio de sesión (contraseña incorrecta o ventana no respondió)."
+                "Error in login. Incorrect password or username. Or the window not responding."
             )
 
-        logger.success("Inicio de sesión exitoso.")
         return MainWindow()
