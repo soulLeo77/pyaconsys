@@ -170,7 +170,7 @@ class MainWindow(TopLevelWindow):
         has_detraction: bool,
         type_detraction: str | None,
         payment_date: str | None,
-    ):
+    ) -> None:
         self._navigate_to_menu_option("Movimientos", "Compras")
 
         _pane_work_area = self._window.PaneControl(
@@ -242,7 +242,33 @@ class MainWindow(TopLevelWindow):
         receipt_number_from_invoice_edit = group_18.EditControl(
             searchDepth=1, ClassName="ImMaskWndClass", foundIndex=2
         )
-        receipt_number_from_invoice_edit.SendKeys(receipt_number_from_invoice)
+        receipt_number_from_invoice_edit.SendKeys(
+            receipt_number_from_invoice + "{ENTER}"
+        )
+
+        _tool_bar_pane_2 = _record_puerchase_window.PaneControl(
+            searchDepth=1, ClassName="ToolbarWndClass", foundIndex=2
+        )
+
+        _tool_bar_to_save = _tool_bar_pane_2.ToolBarControl(
+            searchDepth=1, ClassName="ToolbarWindow32"
+        )
+
+        information_window = self._window.WindowControl(
+            searchDepth=1, Name="Información"
+        )
+        if information_window.Exists():
+            accept_button = information_window.ButtonControl(
+                searchDepth=1, Name="Aceptar"
+            )
+            assert accept_button.GetInvokePattern().Invoke()
+
+            return_button = _tool_bar_to_save.ButtonControl(
+                searchDepth=1, Name="Retornar"
+            )
+
+            assert return_button.GetInvokePattern().Invoke()
+            return
 
         table_pane = _record_puerchase_window.PaneControl(
             searchDepth=1, AutomationId="1"
@@ -295,12 +321,6 @@ class MainWindow(TopLevelWindow):
 
             deposit_date_edit.SendKeys(payment_date + "{TAB}" * 2 + "{ENTER}")
 
-        _tool_bar_pane_2 = _record_puerchase_window.PaneControl(
-            searchDepth=1, ClassName="ToolbarWndClass", foundIndex=2
-        )
-        _tool_bar_to_save = _tool_bar_pane_2.ToolBarControl(
-            searchDepth=1, ClassName="ToolbarWindow32"
-        )
         save_button = _tool_bar_to_save.ButtonControl(
             searchDepth=1, Name="Grabar compra local"
         )
@@ -310,3 +330,6 @@ class MainWindow(TopLevelWindow):
             searchDepth=1, Name="Nueva compra local"
         )
         clear_form_button.GetInvokePattern().Invoke()
+
+        sleep(1)
+        return
