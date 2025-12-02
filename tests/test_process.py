@@ -5,7 +5,7 @@ def test_go_to_compras_view(executable_file, username, password) -> None:
     login_window = LoginWindow(executable_file)
     main_window = login_window.login(username, password)
     main_window.change_work_period()
-    main_window.register_purchase_one_by_one(
+    success = main_window.register_purchase_one_by_one(
         "01",
         "20554144676",
         "01",
@@ -20,3 +20,5 @@ def test_go_to_compras_view(executable_file, username, password) -> None:
         "001",
         "10/11/2025",
     )
+
+    print(success)

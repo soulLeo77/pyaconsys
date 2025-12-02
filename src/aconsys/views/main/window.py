@@ -170,7 +170,7 @@ class MainWindow(TopLevelWindow):
         has_detraction: bool,
         type_detraction: str | None,
         payment_date: str | None,
-    ) -> None:
+    ) -> bool:
         self._navigate_to_menu_option("Movimientos", "Compras")
 
         _pane_work_area = self._window.PaneControl(
@@ -268,7 +268,7 @@ class MainWindow(TopLevelWindow):
             )
 
             assert return_button.GetInvokePattern().Invoke()
-            return
+            return False
 
         table_pane = _record_puerchase_window.PaneControl(
             searchDepth=1, AutomationId="1"
@@ -332,4 +332,4 @@ class MainWindow(TopLevelWindow):
         clear_form_button.GetInvokePattern().Invoke()
 
         sleep(1)
-        return
+        return True
