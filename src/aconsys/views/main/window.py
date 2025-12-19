@@ -31,9 +31,14 @@ class MainWindow(TopLevelWindow):
         option_item = menu_tables.MenuItemControl(searchDepth=1, Name=option_name)
         assert option_item.GetInvokePattern().Invoke()
 
-    def change_work_period(self):
+    def change_work_period(self, month: str | None = None) -> None:
         """
         Abre 'Configuraciones -> Cambio Periodo de Trabajo' y selecciona el mes actual.
+        Si se proporciona un mes, se selecciona ese mes en lugar del mes actual.
+
+        Args:
+            month (str | None): Mes a seleccionar en formato 'MM'. Si es None, se selecciona el mes actual.
+            ejemplo: '01' para enero, '02' para febrero, etc.
         """
         menu_name = "Configuraciones"
         option_name = "Cambio Periodo de Trabajo	Ctrl+I"
@@ -65,9 +70,9 @@ class MainWindow(TopLevelWindow):
 
         rellenar_cuadro = cuadro_mes.EditControl(searchDepth=1, AutomationId="3")
 
-        mes_actual = datetime.now().strftime("%m")
+        targed_mounth = datetime.now().strftime("%m") if month is None else month
 
-        rellenar_cuadro.GetValuePattern().SetValue(mes_actual)
+        rellenar_cuadro.GetValuePattern().SetValue(targed_mounth)
 
         cuadro_año = cuadro_mes.EditControl(searchDepth=1, AutomationId="2")
         cuadro_año.SetFocus()
