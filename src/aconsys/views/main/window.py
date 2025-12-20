@@ -175,6 +175,7 @@ class MainWindow(TopLevelWindow):
         has_detraction: bool,
         type_detraction: str | None,
         payment_date: str | None,
+        aconsys_date: str | None = None,
     ) -> bool:
         self._navigate_to_menu_option("Movimientos", "Compras")
 
@@ -227,6 +228,12 @@ class MainWindow(TopLevelWindow):
             searchDepth=1, ClassName="ImDateWndClass", foundIndex=1
         )
         due_date_edit.SendKeys(due_date)
+
+        if aconsys_date:
+            aconsys_date_edit = group_18.EditControl(
+                searchDepth=1, ClassName="ImDateWndClass", foundIndex=2
+            )
+            aconsys_date_edit.SendKeys(aconsys_date)
 
         concept_type_pane = group_18.PaneControl(
             searchDepth=1, AutomationId="3", foundIndex=4
