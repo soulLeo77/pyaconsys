@@ -176,7 +176,7 @@ class MainWindow(TopLevelWindow):
         type_detraction: str | None,
         payment_date: str | None,
         aconsys_date: str | None = None,
-    ) -> bool:
+    ) -> tuple[bool, str]:
         self._navigate_to_menu_option("Movimientos", "Compras")
 
         _pane_work_area = self._window.PaneControl(
@@ -280,7 +280,7 @@ class MainWindow(TopLevelWindow):
             )
 
             assert return_button.GetInvokePattern().Invoke()
-            return False
+            return False, "ALREADY_REGISTERED"
 
         table_pane = _record_puerchase_window.PaneControl(
             searchDepth=1, AutomationId="1"
@@ -338,10 +338,24 @@ class MainWindow(TopLevelWindow):
         )
         assert save_button.GetInvokePattern().Invoke()
 
+        out_of_period_window = self._window.WindowControl(searchDepth=1, Name="ACONSYS")
+        if out_of_period_window.Exists():
+            accept_btn = out_of_period_window.ButtonControl(
+                searchDepth=1, Name="Aceptar"
+            )
+            assert accept_btn.GetInvokePattern().Invoke()
+
+            return_button = _tool_bar_to_save.ButtonControl(
+                searchDepth=1, Name="Retornar"
+            )
+
+            assert return_button.GetInvokePattern().Invoke()
+            return False, "OUT_OF_PERIOD"
+
         clear_form_button = _tool_bar_to_save.ButtonControl(
             searchDepth=1, Name="Nueva compra local"
         )
         clear_form_button.GetInvokePattern().Invoke()
 
         sleep(1)
-        return True
+        return True, "SUCCESS"
