@@ -206,6 +206,30 @@ class MainWindow(TopLevelWindow):
         )
         autocomplete_supplier_name_btn.GetInvokePattern().Invoke()
 
+        _tool_bar_pane_2 = _record_puerchase_window.PaneControl(
+            searchDepth=1, ClassName="ToolbarWndClass", foundIndex=2
+        )
+
+        _tool_bar_to_save = _tool_bar_pane_2.ToolBarControl(
+            searchDepth=1, ClassName="ToolbarWindow32"
+        )
+
+        supplier_number_not_exists_window = self._window.WindowControl(
+            searchDepth=1, Name="ACONSYS"
+        )
+        if supplier_number_not_exists_window.Exists():
+            accept_btn = supplier_number_not_exists_window.ButtonControl(
+                searchDepth=1, Name="Aceptar"
+            )
+            assert accept_btn.GetInvokePattern().Invoke()
+
+            return_button = _tool_bar_to_save.ButtonControl(
+                searchDepth=1, Name="Retornar"
+            )
+
+            assert return_button.GetInvokePattern().Invoke()
+            return False, "SUPPLIER_NOT_EXISTS"
+
         currency_type_pane = group_18.PaneControl(
             searchDepth=1, AutomationId="3", foundIndex=2
         )
@@ -256,14 +280,6 @@ class MainWindow(TopLevelWindow):
         )
         receipt_number_from_invoice_edit.SendKeys(
             receipt_number_from_invoice + "{ENTER}"
-        )
-
-        _tool_bar_pane_2 = _record_puerchase_window.PaneControl(
-            searchDepth=1, ClassName="ToolbarWndClass", foundIndex=2
-        )
-
-        _tool_bar_to_save = _tool_bar_pane_2.ToolBarControl(
-            searchDepth=1, ClassName="ToolbarWindow32"
         )
 
         information_window = self._window.WindowControl(
