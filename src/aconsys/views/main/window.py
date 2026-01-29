@@ -373,7 +373,7 @@ class MainWindow(TopLevelWindow):
                 reference_type = reference_group.PaneControl(
                     searchDepth=1, AutomationId="3"
                 )
-                document_control = reference_type.DocumentControl(
+                document_control = reference_type.EditControl(
                     searchDepth=1, ClassName="Edit"
                 )
                 document_control.SendKeys(receipt_type + "{ENTER}", interval=0.5)
