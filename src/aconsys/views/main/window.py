@@ -397,12 +397,12 @@ class MainWindow(TopLevelWindow):
                 doc_number_edit = reference_group.EditControl(
                     searchDepth=1, ClassName="ImMaskWndClass", foundIndex=2
                 )
-                doc_number_edit.SendKeys(receipt_number_from_invoice + "{ENTER}" * 2)
+                doc_number_edit.SendKeys(receipt_number_from_invoice + "{ENTER}")
 
                 reference_edit = reference_group.EditControl(
                     searchDepth=1, AutomationId="2"
                 )
-                reference_edit.GetValuePattern().SetValue(concept)
+                reference_edit.SendKeys(concept + "{ENTER}" * 2)
 
                 assert save_button.GetInvokePattern().Invoke()
 
