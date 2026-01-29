@@ -366,6 +366,7 @@ class MainWindow(TopLevelWindow):
             )
 
             if additional_data_window.Exists():
+                additional_data_window.SetTopmost()
                 reference_group = additional_data_window.GroupControl(
                     searchDepth=1, Name="Referencia"
                 )
