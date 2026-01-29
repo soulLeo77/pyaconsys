@@ -362,7 +362,7 @@ class MainWindow(TopLevelWindow):
             assert accept_btn.GetInvokePattern().Invoke()
 
             additional_data_window = self._window.WindowControl(
-                searchDepth=1, ClassName="ThunderRT6FormDC"
+                searchDepth=1, RegexName="Datos adicionales"
             )
 
             if additional_data_window.Exists():
