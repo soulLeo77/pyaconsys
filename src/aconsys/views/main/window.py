@@ -352,6 +352,11 @@ class MainWindow(TopLevelWindow):
         save_button = _tool_bar_to_save.ButtonControl(
             searchDepth=1, Name="Grabar compra local"
         )
+
+        clear_form_button = _tool_bar_to_save.ButtonControl(
+            searchDepth=1, Name="Nueva compra local"
+        )
+
         assert save_button.GetInvokePattern().Invoke()
 
         out_of_period_window = self._window.WindowControl(searchDepth=1, Name="ACONSYS")
@@ -406,6 +411,9 @@ class MainWindow(TopLevelWindow):
 
                 assert save_button.GetInvokePattern().Invoke()
 
+                clear_form_button.GetInvokePattern().Invoke()
+                sleep(1)
+
                 return True, "SUCCESS"
 
             return_button = _tool_bar_to_save.ButtonControl(
@@ -415,9 +423,6 @@ class MainWindow(TopLevelWindow):
             assert return_button.GetInvokePattern().Invoke()
             return False, "OUT_OF_PERIOD"
 
-        clear_form_button = _tool_bar_to_save.ButtonControl(
-            searchDepth=1, Name="Nueva compra local"
-        )
         clear_form_button.GetInvokePattern().Invoke()
 
         sleep(1)
