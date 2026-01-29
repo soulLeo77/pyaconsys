@@ -361,6 +361,52 @@ class MainWindow(TopLevelWindow):
             )
             assert accept_btn.GetInvokePattern().Invoke()
 
+            additional_data_window = self._window.WindowControl(
+                searchDepth=1, ClassName="ThunderRT6FormDC"
+            )
+
+            if additional_data_window.Exists():
+                reference_group = additional_data_window.GroupControl(
+                    searchDepth=1, Name="Referencia"
+                )
+
+                reference_type = reference_group.PaneControl(
+                    searchDepth=1, AutomationId="3"
+                )
+                document_control = reference_type.DocumentControl(
+                    searchDepth=1, ClassName="Edit"
+                )
+                document_control.SendKeys(receipt_type + "{ENTER}", interval=0.5)
+
+                fecha_doc_edit = reference_group.EditControl(
+                    searchDepth=1, ClassName="ImDateWndClass", foundIndex=2
+                )
+                fecha_doc_edit.SendKeys(issue_date)
+
+                fecha_venc_edit = reference_group.EditControl(
+                    searchDepth=1, ClassName="ImDateWndClass", foundIndex=1
+                )
+                fecha_venc_edit.SendKeys(due_date)
+
+                serie_edit = reference_group.EditControl(
+                    searchDepth=1, ClassName="ImMaskWndClass", foundIndex=1
+                )
+                serie_edit.SendKeys(serie)
+
+                doc_number_edit = reference_group.EditControl(
+                    searchDepth=1, ClassName="ImMaskWndClass", foundIndex=2
+                )
+                doc_number_edit.SendKeys(receipt_number_from_invoice + "{ENTER}" * 2)
+
+                reference_edit = reference_group.EditControl(
+                    searchDepth=1, AutomationId="2"
+                )
+                reference_edit.GetValuePattern().SetValue(concept)
+
+                assert save_button.GetInvokePattern().Invoke()
+
+                return True, "SUCCESS"
+
             return_button = _tool_bar_to_save.ButtonControl(
                 searchDepth=1, Name="Retornar"
             )
