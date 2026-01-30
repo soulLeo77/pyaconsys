@@ -175,6 +175,7 @@ class MainWindow(TopLevelWindow):
         has_detraction: bool,
         type_detraction: str | None,
         payment_date: str | None,
+        constancia_number: str | None,
         aconsys_date: str | None = None,
     ) -> tuple[bool, str]:
         self._navigate_to_menu_option("Movimientos", "Compras")
@@ -245,7 +246,7 @@ class MainWindow(TopLevelWindow):
         issue_date_edit = group_18.EditControl(
             searchDepth=1, ClassName="ImDateWndClass", foundIndex=3
         )
-        issue_date_edit.SendKeys(issue_date)
+        issue_date_edit.SendKeys(issue_date + "{ENTER}", interval=0.5)
 
         due_date = date.today().strftime("%d/%m/%Y")
         due_date_edit = group_18.EditControl(
@@ -315,7 +316,7 @@ class MainWindow(TopLevelWindow):
             + "{ENTER}",
         )
 
-        if has_detraction and type_detraction and payment_date:
+        if has_detraction and type_detraction and payment_date and constancia_number:
 
             _tool_bar_pane_1 = _record_puerchase_window.PaneControl(
                 searchDepth=1, ClassName="ToolbarWndClass", foundIndex=1
@@ -342,6 +343,11 @@ class MainWindow(TopLevelWindow):
             _reference_group = _datos_comprobante_spot_window.GroupControl(
                 searchDepth=1, Name="Referencia"
             )
+
+            constancia_number_edit = _reference_group.EditControl(
+                searchDepth=1, ClassName="ImMaskWndClass"
+            )
+            constancia_number_edit.SendKeys(constancia_number)
 
             deposit_date_edit = _reference_group.EditControl(
                 searchDepth=1, ClassName="ImDateWndClass"

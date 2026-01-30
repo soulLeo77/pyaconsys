@@ -19,6 +19,7 @@ def test_go_to_compras_view(executable_file, username, password) -> None:
         has_detraction=True,
         type_detraction="22",
         payment_date="3/01/2024",
+        constancia_number="12345678",
     )
 
     print(success)
