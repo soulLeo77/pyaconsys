@@ -246,7 +246,7 @@ class MainWindow(TopLevelWindow):
         issue_date_edit = group_18.EditControl(
             searchDepth=1, ClassName="ImDateWndClass", foundIndex=3
         )
-        issue_date_edit.SendKeys(issue_date + "{ENTER}", interval=0.5)
+        issue_date_edit.SendKeys(issue_date + "{ENTER}")
 
         due_date = date.today().strftime("%d/%m/%Y")
         due_date_edit = group_18.EditControl(
@@ -316,6 +316,300 @@ class MainWindow(TopLevelWindow):
             + "{ENTER}",
         )
 
+        if has_detraction and type_detraction and payment_date and constancia_number:
+
+            _tool_bar_pane_1 = _record_puerchase_window.PaneControl(
+                searchDepth=1, ClassName="ToolbarWndClass", foundIndex=1
+            )
+            _tool_bar = _tool_bar_pane_1.ToolBarControl(searchDepth=1, Name="")
+            button_spot = _tool_bar.ButtonControl(
+                searchDepth=1, Name="Datos Comprobanteb SPOT"
+            )
+            assert button_spot.GetInvokePattern().Invoke()
+
+            _datos_comprobante_spot_window = self._window.WindowControl(
+                searchDepth=1, Name="Datos adicionales SPOT - Voucher No.-"
+            )
+            assert _datos_comprobante_spot_window.SetTopmost()
+
+            _type_detraction_pane = _datos_comprobante_spot_window.PaneControl(
+                searchDepth=1, AutomationId="3"
+            )
+            type_detraction_edit = _type_detraction_pane.EditControl(
+                searchDepth=1, Name=""
+            )
+            type_detraction_edit.SendKeys(type_detraction)
+
+            _reference_group = _datos_comprobante_spot_window.GroupControl(
+                searchDepth=1, Name="Referencia"
+            )
+
+            constancia_number_edit = _reference_group.EditControl(
+                searchDepth=1, ClassName="ImMaskWndClass"
+            )
+            constancia_number_edit.SendKeys(constancia_number)
+
+            deposit_date_edit = _reference_group.EditControl(
+                searchDepth=1, ClassName="ImDateWndClass"
+            )
+
+            deposit_date_edit.SendKeys(payment_date + "{TAB}" * 2 + "{ENTER}")
+
+        save_button = _tool_bar_to_save.ButtonControl(
+            searchDepth=1, Name="Grabar compra local"
+        )
+
+        clear_form_button = _tool_bar_to_save.ButtonControl(
+            searchDepth=1, Name="Nueva compra local"
+        )
+
+        assert save_button.GetInvokePattern().Invoke()
+
+        out_of_period_window = self._window.WindowControl(searchDepth=1, Name="ACONSYS")
+        if out_of_period_window.Exists():
+            accept_btn = out_of_period_window.ButtonControl(
+                searchDepth=1, Name="Aceptar"
+            )
+            assert accept_btn.GetInvokePattern().Invoke()
+
+            additional_data_window = self._window.WindowControl(
+                searchDepth=1, RegexName="Datos adicionales"
+            )
+
+            if additional_data_window.Exists():
+                additional_data_window.SetTopmost()
+                reference_group = additional_data_window.GroupControl(
+                    searchDepth=1, Name="Referencia"
+                )
+
+                reference_type = reference_group.PaneControl(
+                    searchDepth=1, AutomationId="3"
+                )
+                document_control = reference_type.EditControl(
+                    searchDepth=1, ClassName="Edit"
+                )
+                document_control.SendKeys(receipt_type + "{ENTER}", interval=0.5)
+
+                fecha_doc_edit = reference_group.EditControl(
+                    searchDepth=1, ClassName="ImDateWndClass", foundIndex=2
+                )
+                fecha_doc_edit.SendKeys(issue_date)
+
+                fecha_venc_edit = reference_group.EditControl(
+                    searchDepth=1, ClassName="ImDateWndClass", foundIndex=1
+                )
+                fecha_venc_edit.SendKeys(due_date)
+
+                serie_edit = reference_group.EditControl(
+                    searchDepth=1, ClassName="ImMaskWndClass", foundIndex=1
+                )
+                serie_edit.SendKeys(serie)
+
+                doc_number_edit = reference_group.EditControl(
+                    searchDepth=1, ClassName="ImMaskWndClass", foundIndex=2
+                )
+                doc_number_edit.SendKeys(receipt_number_from_invoice + "{ENTER}")
+
+                reference_edit = reference_group.EditControl(
+                    searchDepth=1, AutomationId="2"
+                )
+                reference_edit.SendKeys(concept + "{ENTER}" * 2)
+
+                assert save_button.GetInvokePattern().Invoke()
+
+                clear_form_button.GetInvokePattern().Invoke()
+                sleep(1)
+
+                return True, "SUCCESS"
+
+            return_button = _tool_bar_to_save.ButtonControl(
+                searchDepth=1, Name="Retornar"
+            )
+
+            assert return_button.GetInvokePattern().Invoke()
+            return False, "OUT_OF_PERIOD"
+
+        clear_form_button.GetInvokePattern().Invoke()
+
+        sleep(1)
+        return True, "SUCCESS"
+
+    def register_alquileres_one_by_one(
+        self,
+        receipt_number: str,
+        supplier_number: str,
+        currency_type: str,
+        receipt_type: str,
+        issue_date: str,
+        concept: str,
+        serie: str,
+        receipt_number_from_invoice: str,
+        items: list[dict[str, str]],
+        has_detraction: bool,
+        type_detraction: str | None,
+        payment_date: str | None,
+        constancia_number: str | None,
+        aconsys_date: str | None = None,
+    ):
+        self._navigate_to_menu_option("Movimientos", "Compras")
+
+        _pane_work_area = self._window.PaneControl(
+            searchDepth=1, Name="Área de trabajo"
+        )
+        _record_puerchase_window = _pane_work_area.WindowControl(
+            searchDepth=1, Name="Registro de compras locales"
+        )
+
+        group_18 = _record_puerchase_window.GroupControl(
+            searchDepth=1, AutomationId="18"
+        )
+
+        receipt_number_pane = group_18.PaneControl(
+            searchDepth=1, AutomationId="3", foundIndex=3
+        )
+        # Setear tipo de compra
+        receipt_number_edit = receipt_number_pane.EditControl(searchDepth=1, Name="")
+        receipt_number_edit.SendKeys(receipt_number + "{ENTER}", interval=0.5)
+
+        supplier_number_edit = group_18.EditControl(
+            searchDepth=1, Name="", foundIndex=8
+        )
+
+        # setear numero de proveedor
+        supplier_number_edit.GetValuePattern().SetValue(supplier_number)
+
+        autocomplete_supplier_name_btn = group_18.ButtonControl(
+            searchDepth=1, AutomationId="35"
+        )
+        autocomplete_supplier_name_btn.GetInvokePattern().Invoke()
+
+        _tool_bar_pane_2 = _record_puerchase_window.PaneControl(
+            searchDepth=1, ClassName="ToolbarWndClass", foundIndex=2
+        )
+
+        _tool_bar_to_save = _tool_bar_pane_2.ToolBarControl(
+            searchDepth=1, ClassName="ToolbarWindow32"
+        )
+
+        supplier_number_not_exists_window = self._window.WindowControl(
+            searchDepth=1, Name="ACONSYS"
+        )
+        if supplier_number_not_exists_window.Exists():
+            accept_btn = supplier_number_not_exists_window.ButtonControl(
+                searchDepth=1, Name="Aceptar"
+            )
+            assert accept_btn.GetInvokePattern().Invoke()
+
+            return_button = _tool_bar_to_save.ButtonControl(
+                searchDepth=1, Name="Retornar"
+            )
+
+            assert return_button.GetInvokePattern().Invoke()
+            return False, "SUPPLIER_NOT_EXISTS"
+
+        currency_type_pane = group_18.PaneControl(
+            searchDepth=1, AutomationId="3", foundIndex=2
+        )
+        # Setear tipo de moneda
+        currency_type_edit = currency_type_pane.EditControl(searchDepth=1, Name="")
+        currency_type_edit.SendKeys(currency_type + "{ENTER}", interval=0.5)
+
+        receipt_type_pane = group_18.PaneControl(
+            searchDepth=1, AutomationId="3", foundIndex=1
+        )
+        # Setear tipo de comprobante
+        receipt_type_edit = receipt_type_pane.EditControl(searchDepth=1, Name="")
+        receipt_type_edit.SendKeys(receipt_type + "{ENTER}", interval=0.5)
+
+        # Setear fecha de emision
+        issue_date_edit = group_18.EditControl(
+            searchDepth=1, ClassName="ImDateWndClass", foundIndex=3
+        )
+        issue_date_edit.SendKeys(issue_date + "{ENTER}")
+
+        # Setear fecha de vencimiento
+        due_date = date.today().strftime("%d/%m/%Y")
+        due_date_edit = group_18.EditControl(
+            searchDepth=1, ClassName="ImDateWndClass", foundIndex=1
+        )
+        due_date_edit.SendKeys(due_date)
+
+        # Setear fecha
+        if aconsys_date:
+            aconsys_date_edit = group_18.EditControl(
+                searchDepth=1, ClassName="ImDateWndClass", foundIndex=2
+            )
+            aconsys_date_edit.SendKeys(aconsys_date)
+
+        concept_type_pane = group_18.PaneControl(
+            searchDepth=1, AutomationId="3", foundIndex=4
+        )
+        # Setear tipo de concepto
+        concept_type_edit = concept_type_pane.EditControl(searchDepth=1, Name="")
+        concept_type_edit.GetValuePattern().SetValue("**")
+
+        # Setear concepto (Glosa del primer Item)
+        concept_edit = group_18.EditControl(
+            searchDepth=1, ClassName="ImTextWndClass", foundIndex=5
+        )
+        concept_edit.GetValuePattern().SetValue(concept)
+
+        # Setear serie
+        serie_edit = group_18.EditControl(
+            searchDepth=1, ClassName="ImMaskWndClass", foundIndex=1
+        )
+        serie_edit.SendKeys(serie)
+
+        # Setear numero de comprobante
+        receipt_number_from_invoice_edit = group_18.EditControl(
+            searchDepth=1, ClassName="ImMaskWndClass", foundIndex=2
+        )
+        receipt_number_from_invoice_edit.SendKeys(
+            receipt_number_from_invoice + "{ENTER}"
+        )
+
+        information_window = self._window.WindowControl(
+            searchDepth=1, Name="Información"
+        )
+        if information_window.Exists():
+            accept_button = information_window.ButtonControl(
+                searchDepth=1, Name="Aceptar"
+            )
+            assert accept_button.GetInvokePattern().Invoke()
+
+            return_button = _tool_bar_to_save.ButtonControl(
+                searchDepth=1, Name="Retornar"
+            )
+
+            assert return_button.GetInvokePattern().Invoke()
+            return False, "ALREADY_REGISTERED"
+
+        # Setear ITEMS
+        table_pane = _record_puerchase_window.PaneControl(
+            searchDepth=1, AutomationId="1"
+        )
+        assert table_pane.SetFocus()
+        table_pane.SendKeys("{SPACE}")
+
+        edit_from_table = table_pane.EditControl(searchDepth=1, Name="")
+        assert edit_from_table.SetFocus()
+
+        for item in items:
+            edit_from_table.SendKeys(
+                f"{item["account_number"]}"
+                + "{RIGHT}"
+                + f"{item["glosa"]}"
+                + "{ENTER}"
+                + f"{item["cc_number"]}"
+                # + "{RIGHT}" * 3
+                + f"{serie}-{receipt_number_from_invoice}"
+                + "{RIGHT}" * 3
+                + f"{item["precio_unitario"]}"
+                + "{RIGHT}",
+                interval=0.2,
+            )
+
+        # Setear datos de detraccion
         if has_detraction and type_detraction and payment_date and constancia_number:
 
             _tool_bar_pane_1 = _record_puerchase_window.PaneControl(
