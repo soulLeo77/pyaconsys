@@ -1,6 +1,7 @@
 import time
 from datetime import date, datetime
 from time import sleep
+from typing import Any
 
 from uiautomation import SendKeys, WindowControl
 
@@ -444,7 +445,7 @@ class MainWindow(TopLevelWindow):
         concept: str,
         serie: str,
         receipt_number_from_invoice: str,
-        items: list[dict[str, str]],
+        items: list[dict[str, Any]],
         has_detraction: bool,
         type_detraction: str | None,
         payment_date: str | None,
@@ -595,19 +596,35 @@ class MainWindow(TopLevelWindow):
         assert edit_from_table.SetFocus()
 
         for item in items:
-            edit_from_table.SendKeys(
-                f"{item["account_number"]}"
-                + "{RIGHT}"
-                + f"{item["glosa"]}"
-                + "{ENTER}"
-                + f"{item["cc_number"]}"
-                # + "{RIGHT}" * 3
-                + f"{serie}-{receipt_number_from_invoice}"
-                + "{RIGHT}" * 3
-                + f"{item["precio_unitario"]}"
-                + "{RIGHT}",
-                interval=0.2,
-            )
+            numero_cuenta = item["account_number"]
+            if numero_cuenta != "1831101":
+                edit_from_table.SendKeys(
+                    f"{item["account_number"]}"
+                    + "{RIGHT}"
+                    + f"{item["glosa"]}"
+                    + "{ENTER}"
+                    + f"{item["cc_number"]}"
+                    # + "{RIGHT}" * 3
+                    + f"{serie}-{receipt_number_from_invoice}"
+                    + "{RIGHT}" * 3
+                    + f"{item["precio_unitario"]}"
+                    + "{RIGHT}",
+                    interval=0.2,
+                )
+            else:
+                edit_from_table.SendKeys(
+                    f"{item["account_number"]}"
+                    + "{RIGHT}"
+                    + f"{item["glosa"]}"
+                    + "{RIGHT}" * 1
+                    + f"{supplier_number}"
+                    + "{RIGHT}" * 2
+                    + f"{serie}-{receipt_number_from_invoice}"
+                    + "{RIGHT}" * 3
+                    + f"{item["precio_unitario"]}"
+                    + "{RIGHT}",
+                    interval=0.2,
+                )
 
         # Setear datos de detraccion
         if has_detraction and type_detraction and payment_date and constancia_number:
