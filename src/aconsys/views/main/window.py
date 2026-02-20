@@ -598,19 +598,33 @@ class MainWindow(TopLevelWindow):
         for item in items:
             numero_cuenta = item["account_number"]
             if numero_cuenta != "1831101":
-                edit_from_table.SendKeys(
-                    f"{item["account_number"]}"
-                    + "{RIGHT}"
-                    + f"{item["glosa"]}"
-                    + "{ENTER}"
-                    + f"{item["cc_number"]}"
-                    # + "{RIGHT}" * 3
-                    + f"{serie}-{receipt_number_from_invoice}"
-                    + "{RIGHT}" * 3
-                    + f"{item["precio_unitario"]}"
-                    + "{RIGHT}",
-                    interval=0.2,
-                )
+                glosa = item["glosa"]
+                lenght_glosa = len(glosa)
+                if lenght_glosa < 50:
+                    edit_from_table.SendKeys(
+                        f"{item["account_number"]}"
+                        + "{RIGHT}"
+                        + f"{item["glosa"]}"
+                        + "{ENTER}"
+                        + f"{item["cc_number"]}"
+                        + f"{serie}-{receipt_number_from_invoice}"
+                        + "{RIGHT}" * 3
+                        + f"{item["precio_unitario"]}"
+                        + "{RIGHT}",
+                        interval=0.2,
+                    )
+                else:
+                    edit_from_table.SendKeys(
+                        f"{item['account_number']}"
+                        + "{RIGHT}"
+                        + f"{item['glosa']}"
+                        + f"{item['cc_number']}"
+                        + f"{serie}-{receipt_number_from_invoice}"
+                        + "{RIGHT}" * 3
+                        + f"{item['precio_unitario']}"
+                        + "{RIGHT}",
+                        interval=0.2,
+                    )
             else:
                 edit_from_table.SendKeys(
                     f"{item["account_number"]}"
