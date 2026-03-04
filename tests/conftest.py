@@ -38,3 +38,24 @@ def username() -> str:
 def password() -> SecretStr:
     """Password for the Aconsys server."""
     return SecretStr(environ["ACONSYS_PASSWORD"])
+
+
+@fixture(scope="session")
+def compras_data() -> dict[str, str]:
+    return {
+        "ruc": environ["COMPRAS_RUC_TEST"],
+        "serie": environ["COMPRAS_SERIE_TEST"],
+        "comprobante": environ["COMPRAS_COMPROBANTE_TEST"],
+        "account_number": environ["COMPRAS_ACCOUNT_NUMBER_TEST"],
+    }
+
+
+@fixture(scope="session")
+def alquileres_data() -> dict[str, str]:
+    return {
+        "ruc": environ["ALQUILERES_RUC_TEST"],
+        "serie": environ["ALQUILERES_SERIE_TEST"],
+        "comprobante": environ["ALQUILERES_COMPROBANTE_TEST"],
+        "first_account_number": environ["FIRST_ALQUILERES_ACCOUNT_NUMBER_TEST"],
+        "second_account_number": environ["SECOND_ALQUILERES_ACCOUNT_NUMBER_TEST"],
+    }
